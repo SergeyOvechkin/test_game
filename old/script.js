@@ -852,7 +852,7 @@ canvas.onmousedown = function (e) {
     if(x > desc_sprite_lines.button.dx && x < desc_sprite_lines.button.dx+desc_sprite_lines.button.dWidth &&
 	   y > desc_sprite_lines.button.dy && y < desc_sprite_lines.button.dy+desc_sprite_lines.button.dHeight){
 		   
-		   console.log('https://apps.apple.com/us/app/home-designer-match-blast/id1449747378');
+		   console.log('https://');
 	   }
 
 	if(x > desc_sprite_lines.option_panel_center.dx && x < desc_sprite_lines.option_panel_center.dx+desc_sprite_lines.option_panel_center.dWidth &&
