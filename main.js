@@ -52,14 +52,8 @@ createSprites(sprites, null, decs_text_objects, "text");
 sprites.black_screen = new SpriteBalckScreen(rest_objects.black_screen);
 sprites.hend = new SpriteImg(img_hend, rest_objects.hend);
 
-var anim_obj = { 
-	//black_screen: animationOpacity(rest_objects.black_screen), //анимация появления черного экрана
-}
-
-var animation_order_button_pulsation = animation_order(); ///запускает анимации в порядке для масштабирования кнопки
-var animation_order_scene_1 = animation_order(); ///запускает анимации в порядке для 1 сцены
-var animation_order_lines = animation_order();
-var animation_order_scene_2 = animation_order();
+var stars = [];
+createStars();
 
 ///переменные главного цикла
 var oldTime = null;//время предыдущего цикла
@@ -69,6 +63,19 @@ var inactionCounter = 2000;
 var variant_tabble = 1; //вариант стола
 var variant_art = 1;
 var showStars = false;
+
+
+
+var animation_order_button_pulsation = animation_order(); ///запускает анимации в порядке для масштабирования кнопки
+var animation_order_scene_1 = animation_order(); ///запускает анимации в порядке для 1 сцены
+var animation_order_lines = animation_order();
+var animation_order_scene_2 = animation_order();
+var animation_order_hend = animation_order();
+var animation_order_scene_3 = animation_order();
+var animation_order_scene_3_5 = animation_order();
+var animation_order_scene_4 = animation_order();
+var animation_order_scene_4_5 = animation_order();
+
 
 //основной цикл игры 
 function mainСycle(timestamp){
@@ -88,7 +95,7 @@ function mainСycle(timestamp){
       if(curentScene  == 1){
            animation_order_scene_1([
 		   
-		          [sprites.layer565, "anim_wait" , 500, stepTime, function(counter){  counter.count = 1; }],
+		          [sprites.layer565, "anim_wait" , 500, stepTime, (counter)=>{  counter.count = 1; }],
 				  [sprites.layer565, "anim_move", 627, 912, 1000, stepTime, function(counter){ counter.count = 2; }],
 				  [ ///запускает две анимации пралельно
 				    [sprites.dialog, "anim_move", 183, 597, 720, stepTime, function(counter){ counter.count += 1; }],
@@ -129,14 +136,14 @@ function mainСycle(timestamp){
 			[sprites.option_panel_all, "anim_wait", 500, stepTime, function(counter){  counter.count = 0;  curentScene = 2.3 }],
 		   ]);
 		   
-	     }else if( curentScene == 2.3 && inactionCounter > inaction || curentScene == 2.3 && animation_order_scene_2("isEnd")=="2.3_" || curentScene == 2.5 && animation_order_scene_2("isEnd") == "2.3_" ){	 
-			 animation_order_scene_2([ 
-			    [sprites.option_panel_all, "anim_wait", 3000, stepTime, function(counter){ counter.count = 1; counter.isEnd = "2.3_";  }],
+	     }else if( curentScene == 2.3 && inactionCounter > inaction ||  curentScene == 2.5 && animation_order_hend("isEnd") == "2.3_" ){	 
+			 animation_order_hend([ 
+			    [sprites.option_panel_center, "anim_wait", 3000, stepTime, function(counter){ counter.count = 1; counter.isEnd = "2.3_";  }],
 				[sprites.hend, "anim_move", 120, 600, 1500, stepTime, function(counter){ counter.count = 2; sprites.option_panel_center.show = true;}],
 				[sprites.option_panel_center, "anim_scale", "little", 1.02, 100, stepTime, function(counter){  counter.count = 3; sprites.option_panel_center.show = false;}],
 				[sprites.option_panel_center, "anim_scale", "big", 1.02, 100, stepTime, function(counter){ counter.count = 4; }],
-				[sprites.option_panel_all, "anim_wait", 300, stepTime, function(counter){  counter.count = 5; }],
-				[sprites.hend, "anim_move", -1000, 1000, 500, stepTime, function(counter){ sprites.option_panel_center.show = false; counter.count = 0; counter.isEnd = "2.3"; }],
+				[sprites.option_panel_center, "anim_wait", 300, stepTime, function(counter){  counter.count = 5; }],
+				[sprites.hend, "anim_move", -1000, 1000, 500, stepTime, function(counter){ counter.count = 0; counter.isEnd = "2.3"; }],
 							 
 			 ])
 		 }else if( curentScene == 2.5 ){
@@ -170,7 +177,147 @@ function mainСycle(timestamp){
 				[sprites.option_panel_green, "anim_wait", 1000, stepTime, function(counter){  counter.count = 10; curentScene = 3; inactionCounter= -3000; sprites.hend.show = true; }],
 			 ]) 
 		 }
-	  }		  
+	  }	
+	  ///////////////////////////сцена 3 ///////////////////////////
+      if(Math.floor(curentScene)  == 3){ 
+			
+		 if(curentScene == 3 && inactionCounter > inaction || curentScene == 3.5 && animation_order_lines("isEnd") == "table_line_" ){
+			animation_order_lines([
+				[sprites.line_tabble, "anim_opacity", 500, 0.2,  stepTime,  function(counter){  counter.count = 1; counter.isEnd = "table_line_";  }],		 
+				[sprites.line_tabble, "anim_opacity", 500, 1.0,  stepTime,  function(counter){  counter.count = 2; }],	
+				[sprites.line_tabble, "anim_opacity", 500, 0.2,  stepTime,  function(counter){  counter.count = 3; }],	
+				[sprites.line_tabble, "anim_opacity", 500, 1.0, stepTime,  function(counter){ counter.count = 4; } ],
+				[sprites.line_tabble, "anim_wait", 3000, stepTime, function(counter){ counter.count = 0; counter.isEnd = "table_line";  } ],			 
+			]);  			  
+		  }
+		  if( curentScene == 3 && inactionCounter > inaction || curentScene == 3.5 && animation_order_hend("isEnd") == "hend_" ){
+			 animation_order_hend([ 
+			    [sprites.option_panel_center, "anim_wait", 3000, stepTime, function(counter){ counter.count = 1; counter.isEnd = "hend_";  }],
+				[sprites.hend, "anim_move", 120, 600, 1500, stepTime, function(counter){ counter.count = 2; sprites.option_panel_center.show = true;}],
+				[sprites.option_panel_center, "anim_scale", "little", 1.02, 100, stepTime, function(counter){  counter.count = 3; sprites.option_panel_center.show = false;}],
+				[sprites.option_panel_center, "anim_scale", "big", 1.02, 100, stepTime, function(counter){ counter.count = 4; }],
+				[sprites.option_panel_center, "anim_wait", 300, stepTime, function(counter){  counter.count = 5; }],
+				[sprites.hend, "anim_move", -1000, 1000, 500, stepTime, function(counter){  counter.count = 0; counter.isEnd = "hend"; }],
+							 
+			 ])		   
+		  }
+		  animation_order_scene_3([
+				[sprites.option_panel_all, "anim_wait", 1500, stepTime, function(counter){  counter.count = 1; sprites.option_panel_all.show = true; sprites.option_panel_all.opacity = 0.0;  }],
+				[
+					[sprites.option_panel_all, "anim_opacity", 500,  1.0 , stepTime,  function(counter){   counter.count += 0.5; }],
+					[sprites.option_panel_tabbles,  "anim_opacity", 500, 1.0, stepTime,  function(counter){   counter.count += 0.5; }],
+				],	
+			]);		
+		 if(curentScene == 3.5){
+			
+			animation_order_scene_3_5([
+			    [sprites.option_panel_all, "anim_wait", 500, stepTime, function(counter){ sprites["option_tabble_"+variant_tabble].show = true;
+ 				  sprites.option_panel_tabbles.show = false; sprites.option_panel_center.show = true; counter.count = 1;
+				  sprites.option_panel_green.show = true; }],		    
+				[sprites.option_panel_all, "anim_opacity", 500,  0.0, stepTime,  function(counter){   counter.count = 2; sprites.option_panel_all.show = false;  }],
+			    [sprites.option_panel_green, "anim_opacity", 300, 1.0, stepTime, function(counter){   counter.count = 3; }],
+				[sprites.option_panel_green, "anim_opacity", 300, 0.0, stepTime, function(counter){   counter.count = 4; }],
+				[sprites.option_panel_green, "anim_opacity", 300, 1.0, stepTime, function(counter){   counter.count = 5; }],
+				[
+					[sprites.option_panel_green, "anim_scale",  "big", 1.2, 800, stepTime, function(counter){ counter.count += 0.34;  }],
+					[sprites["option_tabble_"+variant_tabble], "anim_scale",  "big", 1.2, 800, stepTime, function(counter){ counter.count += 0.34; }],					
+					[sprites.line_tabble,  "anim_opacity", 300, 0.0,  stepTime,  function(counter){  counter.count += 0.34; inactionCounter= -5000; }],					
+				],
+				[sprites.option_panel_all, "anim_wait", 1000, stepTime, function(counter){  counter.count = 7; sprites.option_panel_center.show = false; }],
+				[
+					[sprites.option_panel_green, "anim_scale",  "little", 1.2, 1000, stepTime, function(counter){ counter.count += 0.251; }],
+					[sprites["option_tabble_"+variant_tabble], "anim_scale",  "little", 1.2, 1000, stepTime, function(counter){ counter.count += 0.251; }],
+					[sprites.option_panel_green, "anim_opacity", 300, 0.0, stepTime, function(counter){   counter.count += 0.251;  }],
+					[sprites["option_tabble_"+variant_tabble], "anim_opacity", 300, 0.0, stepTime, function(counter){   counter.count += 0.25; }],
+				],
+				[
+					[sprites["side_tabble_right_"+variant_tabble], "anim_opacity", 500, 1.0, stepTime, function(counter){   counter.count += 0.5; }],
+					[sprites["side_tabble_left_"+variant_tabble], "anim_opacity", 500, 1.0, stepTime, function(counter){  curentScene = 4; counter.count += 0.5; }],					
+				]				
+			]);
+	     }
+      }
+	  ///////////////////////////////////сцеа 4 ////////////////////////
+      if(Math.floor(curentScene) == 4){ 
+		if(curentScene == 4 && inactionCounter > inaction || curentScene == 4.5 && animation_order_lines("isEnd") == "art_line1_" ){
+			animation_order_lines([
+				[sprites.line_wall_art, "anim_opacity", 500, 0.2,  stepTime,  function(counter){  counter.count = 1; counter.isEnd = "table_line1_";  }],		 
+				[sprites.line_wall_art, "anim_opacity", 500, 1.0,  stepTime,  function(counter){  counter.count = 2; }],	
+				[sprites.line_wall_art, "anim_opacity", 500, 0.2,  stepTime,  function(counter){  counter.count = 3; }],	
+				[sprites.line_wall_art, "anim_opacity", 500, 1.0, stepTime,  function(counter){ counter.count = 4; } ],
+				[sprites.line_wall_art, "anim_wait", 3000, stepTime, function(counter){ counter.count = 0; counter.isEnd = "table_line1";  } ],			 
+			]); 			  
+		  }
+		  if(curentScene == 4 && inactionCounter > inaction || curentScene == 4.5 && animation_order_hend("isEnd") == "hend1_" ){
+			 animation_order_hend([ 
+			    [sprites.option_panel_center, "anim_wait", 3000, stepTime, function(counter){ counter.count = 1; counter.isEnd = "hend1_";  }],
+				[sprites.hend, "anim_move", 120, 600, 1500, stepTime, function(counter){ counter.count = 2; sprites.option_panel_center.show = true;}],
+				[sprites.option_panel_center, "anim_scale", "little", 1.02, 100, stepTime, function(counter){  counter.count = 3; sprites.option_panel_center.show = false;}],
+				[sprites.option_panel_center, "anim_scale", "big", 1.02, 100, stepTime, function(counter){ counter.count = 4; }],
+				[sprites.option_panel_center, "anim_wait", 300, stepTime, function(counter){  counter.count = 5; }],
+				[sprites.hend, "anim_move", -1000, 1000, 500, stepTime, function(counter){  counter.count = 0; counter.isEnd = "hend1"; }],
+							 
+			 ])		   
+		  }
+		  if(curentScene == 4){
+			animation_order_scene_4([
+				[sprites.option_panel_all, "anim_wait", 1500, stepTime, function(counter){  counter.count = 1; sprites.option_panel_all.show = true; sprites.option_panel_all.opacity = 0.0;  }],
+				[
+					[sprites.option_panel_all, "anim_opacity", 500,  1.0 , stepTime,  function(counter){   counter.count += 0.5; }],
+					[sprites.option_panel_arts,  "anim_opacity", 500, 1.0, stepTime,  function(counter){   counter.count += 0.5; }],
+				],	
+			]);
+		  }		 
+	      if(curentScene == 4.5){		
+			animation_order_scene_4_5([
+			    [sprites.option_panel_all, "anim_wait", 500, stepTime, function(counter){ sprites["option_art_"+variant_art].show = true;
+ 				  sprites.option_panel_arts.show = false; sprites.option_panel_center.show = true; counter.count = 1;
+				  sprites.option_panel_green.show = true; }],		    
+				[sprites.option_panel_all, "anim_opacity", 500,  0.0, stepTime,  function(counter){   counter.count = 2; sprites.option_panel_all.show = false;  }],
+			    [sprites.option_panel_green, "anim_opacity", 300, 1.0, stepTime, function(counter){   counter.count = 3; }],
+				[sprites.option_panel_green, "anim_opacity", 300, 0.0, stepTime, function(counter){   counter.count = 4; }],
+				[sprites.option_panel_green, "anim_opacity", 300, 1.0, stepTime, function(counter){   counter.count = 5; }],
+				[
+					[sprites.option_panel_green, "anim_scale",  "big", 1.2, 800, stepTime, function(counter){ counter.count += 0.34;  }],
+					[sprites["option_art_"+variant_art], "anim_scale",  "big", 1.2, 800, stepTime, function(counter){  counter.count += 0.34; }],					
+					[sprites.line_wall_art,  "anim_opacity", 300, 0.0,  stepTime,  function(counter){  counter.count += 0.34; inactionCounter= -5000; }],					
+				],
+				[sprites.option_panel_all, "anim_wait", 1000, stepTime, function(counter){  counter.count = 7; sprites.option_panel_center.show = false; }],
+				[
+					[sprites.option_panel_green, "anim_scale",  "little", 1.2, 1000, stepTime, function(counter){ counter.count += 0.251; }],
+					[sprites["option_art_"+variant_art], "anim_scale",  "little", 1.2, 1000, stepTime, function(counter){ counter.count += 0.251; }],
+					[sprites.option_panel_green, "anim_opacity", 300, 0.0, stepTime, function(counter){   counter.count += 0.251;  }],
+					[sprites["option_art_"+variant_art], "anim_opacity", 300, 0.0, stepTime, function(counter){   counter.count += 0.25; }],
+				],				
+				[sprites["wall_art_interior_"+variant_art], "anim_opacity", 500, 1.0, stepTime, function(counter){   counter.count = 9; }],
+                [sprites.option_panel_all, "anim_wait", 1500, stepTime, function(counter){  counter.count = 10; showStars = true; }],
+				[sprites.option_panel_all, "anim_wait", 1000, stepTime, function(counter){  counter.count = 11; createStars(300);   }],	
+				[sprites.option_panel_all, "anim_wait", 1000, stepTime, function(counter){  counter.count = 12; createStars(300);   }],	
+				[sprites.option_panel_all, "anim_wait", 1000, stepTime, function(counter){  counter.count = 13; createStars(300);   }],	
+				[sprites.layer565, "anim_move", 627, 912, 1000, stepTime, function(counter){ counter.count = 14; }],
+				[ ///запускает две анимации пралельно
+				    [sprites.dialog, "anim_move",  183, 597, 720, stepTime, function(counter){ counter.count += 0.5; }],
+					[sprites.dialog_2, "anim_move", -157, 710, 695, stepTime, function(counter){ counter.count += 0.51; }],
+			    ],
+                [sprites.option_panel_all, "anim_wait", 2500, stepTime, function(counter){  counter.count = 0; showStars = false; curentScene = 5; }],	
+
+			]);
+			if(showStars){
+				fadeInStars(stepTime, 500);
+				rotateStar_1(stepTime, 3000); 
+				moveStars(stepTime, 7000);
+				rotateStarAll(stepTime, 25000);
+			}
+	    }	
+	  }
+	if(curentScene == 5){	
+			animation_order_scene_4_5([
+				[
+				    [sprites.game_logo, "anim_move", 322, 200, 2000, stepTime, function(counter){ counter.count += 0.51; }],
+					[sprites.button, "anim_move", 235, 1530, 2000, stepTime, function(counter){ counter.count += 0.5; }],				
+				],
+			]);  
+	  }	  
         
 //////////////////////////	отрисовка всех объектов ///////////	    
         drawAll();
@@ -198,7 +345,7 @@ canvas.onmousedown = function (e) {
     if(x > sprites.button.dx && x < sprites.button.dx+sprites.button.dWidth &&
 	   y > sprites.button.dy && y < sprites.button.dy+sprites.button.dHeight){
 		   
-		   console.log('https://apps.apple.com/us/app/home-designer-match-blast/id1449747378');
+		   console.log('https://');
 	   }
 
 	if(x > sprites.option_panel_center.dx && x < sprites.option_panel_center.dx+sprites.option_panel_center.dWidth &&
@@ -208,6 +355,37 @@ canvas.onmousedown = function (e) {
 			if(curentScene == 4){variant_scene_4(2)}
 			if(curentScene == 2.3) curentScene = 2.5;
 		 
+	  }
+	  
+	  if(x > sprites.option_panel_all.dx && x < sprites.option_panel_all.dx+sprites.option_panel_center.dWidth &&
+	   y > sprites.option_panel_all.dy && y < sprites.option_panel_all.dy+sprites.option_panel_all.dHeight
+	   ){		   
+			if(curentScene == 3){variant_scene_3(1)}
+			if(curentScene == 4){variant_scene_4(1)}
+          			
+	  } 
+
+     if(x > sprites.option_panel_center.dx+sprites.option_panel_center.dWidth+20
+ 	    && x < sprites.option_panel_center.dx+sprites.option_panel_center.dWidth*2+20 &&
+	    y > sprites.option_panel_all.dy && y < sprites.option_panel_all.dy+sprites.option_panel_all.dHeight	    
+	   ){
+         
+          if(curentScene == 3){variant_scene_3(3)}	
+          if(curentScene == 4){variant_scene_4(3)}		  
+		 
+	  }
+      
+      function variant_scene_3(variant){
+		 curentScene = 3.5;
+		 variant_tabble = variant;
+		  
+	  }
+	  
+      function variant_scene_4(variant){
+		 //console.log(variant);
+		 curentScene = 4.5;
+		 variant_art = variant;
+		  
 	  }
    	  
 };
