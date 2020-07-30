@@ -180,95 +180,6 @@ var stars = [];
 
 createStars();
 
-function createStars(radius){
-	
-	if(!radius)radius = 400;
-			
-	for(var i=0; i<12; i++){
-	    
-		var fi = (i)*(Math.PI*2)/12;
-		
-		var x_ = radius*Math.cos(fi);
-		var y_ = radius*Math.sin(fi);
-		
-		var dx = canvas_width/2 - radius*Math.cos(fi)/proportion_x;  
-		var dy = canvas_height/2 - radius*Math.sin(fi)/proportion_y;
-		
-		stars.push({ fi: fi, radius: radius, rotate: 35, opacity: 0.1, dx: dx, dy: dy})	
-	}		
-}
-
-function rotateStar_1(stepTime, speed){
-	
-	for(var i=0; i< stars.length; i++){
-		
-		stars[i].rotate += 360/(speed/stepTime);		
-			
-		if(stars[i].rotate > 360)stars[i].rotate = stars[i].rotate - 360;
-			
-	}	
-}
-function rotateStarAll(stepTime, speed){
-	
-	for(var i=0; i< stars.length; i++){
-				
-		stars[i].fi += 360/(speed/stepTime);		
-	
-		if(stars[i].fi > 360)stars[i].fi = stars[i].fi - 360;		
-	}	
-}
-
-function fadeInStars(stepTime, speed){
-	
-	for(var i=0; i< stars.length; i++){
-		//console.log(stars[i].opacity);
-		if(stars[i].opacity >= 1 ){
-			
-			continue;
-		}
-		
-		stars[i].opacity += 1/(speed/stepTime);
-	}	
-}
-
-function moveStars(stepTime, speed){
-	
-	for(var i=0; i< stars.length; i++){
-	
-		if(stars[i].radius >= main_height ){
-			
-			stars.splice(i, 1);
-			
-			continue;
-			
-		}		
-		stars[i].radius += main_height/(speed/stepTime);
-	}	
-}
-
-function drawStars(){
-	 //console.log("1");
-	for (var i=0; i<stars.length; i++){
-        ctx.globalAlpha = stars[i].opacity;	
-		
-		var dx_ = canvas_width/2 - stars[i].radius*Math.cos(stars[i].fi)/proportion_x;  
-		var dy_ = canvas_height/2 - stars[i].radius*Math.sin(stars[i].fi)/proportion_y;
-	//	console.log(dx_, dy_)
-       		
-		ctx.translate(dx_, dy_);		
-		ctx.rotate(stars[i].rotate * Math.PI / 180);		
-		ctx.translate(-dx_, -dy_);	
-		
-		drawStar(dx_, dy_ , 4, 20/proportion_y, 7/proportion_y);
-		
-	    ctx.translate(dx_, dy_);		
-    	ctx.rotate(-(stars[i].rotate * Math.PI / 180));
-		ctx.translate(-dx_, -dy_);
-		ctx.globalAlpha =  1.0;
-	}	
-}
-
-
 ///остальные объекты
 var rest_objects = {
 	
@@ -1026,7 +937,93 @@ function drawBlackScreen(){
 }
 
 
+function createStars(radius){
+	
+	if(!radius)radius = 400;
+			
+	for(var i=0; i<12; i++){
+	    
+		var fi = (i)*(Math.PI*2)/12;
+		
+		var x_ = radius*Math.cos(fi);
+		var y_ = radius*Math.sin(fi);
+		
+		var dx = canvas_width/2 - radius*Math.cos(fi)/proportion_x;  
+		var dy = canvas_height/2 - radius*Math.sin(fi)/proportion_y;
+		
+		stars.push({ fi: fi, radius: radius, rotate: 35, opacity: 0.1, dx: dx, dy: dy})	
+	}		
+}
 
+function rotateStar_1(stepTime, speed){
+	
+	for(var i=0; i< stars.length; i++){
+		
+		stars[i].rotate += 360/(speed/stepTime);		
+			
+		if(stars[i].rotate > 360)stars[i].rotate = stars[i].rotate - 360;
+			
+	}	
+}
+function rotateStarAll(stepTime, speed){
+	
+	for(var i=0; i< stars.length; i++){
+				
+		stars[i].fi += 360/(speed/stepTime);		
+	
+		if(stars[i].fi > 360)stars[i].fi = stars[i].fi - 360;		
+	}	
+}
+
+function fadeInStars(stepTime, speed){
+	
+	for(var i=0; i< stars.length; i++){
+		//console.log(stars[i].opacity);
+		if(stars[i].opacity >= 1 ){
+			
+			continue;
+		}
+		
+		stars[i].opacity += 1/(speed/stepTime);
+	}	
+}
+
+function moveStars(stepTime, speed){
+	
+	for(var i=0; i< stars.length; i++){
+	
+		if(stars[i].radius >= main_height ){
+			
+			stars.splice(i, 1);
+			
+			continue;
+			
+		}		
+		stars[i].radius += main_height/(speed/stepTime);
+	}	
+}
+
+function drawStars(){
+	 //console.log("1");
+	for (var i=0; i<stars.length; i++){
+        ctx.globalAlpha = stars[i].opacity;	
+		
+		var dx_ = canvas_width/2 - stars[i].radius*Math.cos(stars[i].fi)/proportion_x;  
+		var dy_ = canvas_height/2 - stars[i].radius*Math.sin(stars[i].fi)/proportion_y;
+	//	console.log(dx_, dy_)
+       		
+		ctx.translate(dx_, dy_);		
+		ctx.rotate(stars[i].rotate * Math.PI / 180);		
+		ctx.translate(-dx_, -dy_);	
+		
+		drawStar(dx_, dy_ , 4, 20/proportion_y, 7/proportion_y);
+		
+	    ctx.translate(dx_, dy_);		
+    	ctx.rotate(-(stars[i].rotate * Math.PI / 180));
+		ctx.translate(-dx_, -dy_);
+		ctx.globalAlpha =  1.0;
+	}	
+}
 
 
     function drawStar(cx,cy,spikes,outerRadius,innerRadius){
