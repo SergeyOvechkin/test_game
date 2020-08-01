@@ -1,3 +1,52 @@
+///выполняет последовательно массив с анимациями в цикле
+function animation_order(){
+	
+	var counter = {};
+   
+	return function(id ,arr_width_func){
+		
+		if(counter[id] == undefined)counter[id] = {count: 0, isEnd: false};
+		
+		if(arr_width_func == "isEnd")return counter[id].isEnd;
+		
+		var i = Math.floor(counter[id].count);
+
+        if(typeof arr_width_func[Math.floor(counter[id].count)] == "undefined")return;
+		
+			if(Array.isArray(arr_width_func[i][0])){	  
+					for(var j=0; j<arr_width_func[i].length; j++){					 
+						var sprite_and_fn =  arr_width_func[i][j].splice(0, 2);					
+						arr_width_func[i][j].push(counter[id])	           
+						sprite_and_fn[0][sprite_and_fn[1]].apply(sprite_and_fn[0], arr_width_func[i][j]);				 						 	
+					}					
+		     }else{
+						var sprite_and_fn =  arr_width_func[i].splice(0, 2);					
+						arr_width_func[i].push(counter[id])	           
+						sprite_and_fn[0][sprite_and_fn[1]].apply(sprite_and_fn[0], arr_width_func[i]);
+			}	  
+	}	
+}
+
+///разбивает строку текста на несколько если она не помещается в указанный максимальный размер
+function getLines(ctx, text, maxWidth) {
+    var words = text.split(" ");
+    var lines = [];
+    var currentLine = words[0];
+
+    for (var i = 1; i < words.length; i++) {
+        var word = words[i];
+        var width = ctx.measureText(currentLine + " " + word).width;
+        if (width < maxWidth) {
+            currentLine += " " + word;
+        } else {
+            lines.push(currentLine);
+            currentLine = word;
+        }
+    }
+    lines.push(currentLine);
+    return lines;
+}
+
 //отображает сцену
 function drawScene(img){
 	ctx.drawImage(img, (max_width - main_width)/2, 0, main_width, main_height, 0, 0, main_width/proportion_x, main_height/proportion_y);		
@@ -85,148 +134,59 @@ function drawAll(){
 		drawScene(img_interior_2);	
 		drawEndScreene();
         sprites.dialog_3.render();	      		
-	}
-    
-	if(showStars)drawStars();
+	}   
+	if(showStars)drawStars(stars);
 	
 	sprites.game_logo.render();
     sprites.button.render();	
 }
 
-///выполняет последовательно массив с анимациями в цикле
-function animation_order(){
-	
-	var counter = {count: 0, isEnd: false};
-
-	return function(arr_width_func){
-		
-		if(arr_width_func == "isEnd")return counter.isEnd;
-
-        if(typeof arr_width_func[Math.floor(counter.count)] == "undefined")return;
-		
-	    for(var i=0; i<arr_width_func.length; i++){
-			
-			if(Array.isArray(arr_width_func[i][0])){
-					
-                  if(i == Math.floor(counter.count)){
-					  
-					for(var j=0; j<arr_width_func[i].length; j++){
-					 if(typeof arr_width_func[i][j] == "text"){						 
-						var funcName =  arr_width_func[i][j].shift();
-						arr_width_func[i][j].push(counter);
-						anim_obj[funcName].apply(null, arr_width_func[i][j]);					
-					 }else{						 
-						var sprite_and_fn =  arr_width_func[i][j].splice(0, 2);					
-						arr_width_func[i][j].push(counter)	           
-						sprite_and_fn[0][sprite_and_fn[1]].apply(sprite_and_fn[0], arr_width_func[i][j]);				 						 
-					 }	
-					}
-				  }					
-			}else{
-				if(i == Math.floor(counter.count)){					
-					
-					if(typeof arr_width_func[i] == "text"){
-						var funcName =  arr_width_func[i].shift();
-						arr_width_func[i].push(counter);
-						anim_obj[funcName].apply(null, arr_width_func[i]);						
-					}else{
-						var sprite_and_fn =  arr_width_func[i].splice(0, 2);					
-						arr_width_func[i].push(counter)	           
-						sprite_and_fn[0][sprite_and_fn[1]].apply(sprite_and_fn[0], arr_width_func[i]);
-					}					
-				}
-			}
-	  }			
-	}	
-}
 
 
-///разбивает строку текста на несколько если она не помещается в указанный максимальный размер
-function getLines(ctx, text, maxWidth) {
-    var words = text.split(" ");
-    var lines = [];
-    var currentLine = words[0];
-
-    for (var i = 1; i < words.length; i++) {
-        var word = words[i];
-        var width = ctx.measureText(currentLine + " " + word).width;
-        if (width < maxWidth) {
-            currentLine += " " + word;
-        } else {
-            lines.push(currentLine);
-            currentLine = word;
-        }
-    }
-    lines.push(currentLine);
-    return lines;
-}
-
-function createStars(radius){
-	
-	if(!radius)radius = 400;
-			
-	for(var i=0; i<12; i++){
-	    
-		var fi = (i)*(Math.PI*2)/12;
-		
+function createStars(stars, radius){	
+	if(!radius)radius = 400;			
+	for(var i=0; i<12; i++){	    
+		var fi = (i)*(Math.PI*2)/12;		
 		var x_ = radius*Math.cos(fi);
-		var y_ = radius*Math.sin(fi);
-		
+		var y_ = radius*Math.sin(fi);	
 		var dx = canvas_width/2 - radius*Math.cos(fi)/proportion_x;  
-		var dy = canvas_height/2 - radius*Math.sin(fi)/proportion_y;
-		
+		var dy = canvas_height/2 - radius*Math.sin(fi)/proportion_y;		
 		stars.push({ fi: fi, radius: radius, rotate: 35, opacity: 0.1, dx: dx, dy: dy})	
 	}		
 }
 
-function rotateStar_1(stepTime, speed){
-	
-	for(var i=0; i< stars.length; i++){
-		
-		stars[i].rotate += 360/(speed/stepTime);		
-			
-		if(stars[i].rotate > 360)stars[i].rotate = stars[i].rotate - 360;
-			
+function rotateStar_1(stars, stepTime, speed){	
+	for(var i=0; i< stars.length; i++){	
+		stars[i].rotate += 360/(speed/stepTime);				
+		if(stars[i].rotate > 360)stars[i].rotate = stars[i].rotate - 360;		
 	}	
 }
-function rotateStarAll(stepTime, speed){
-	
-	for(var i=0; i< stars.length; i++){
-				
+function rotateStarAll(stars, stepTime, speed){	
+	for(var i=0; i< stars.length; i++){				
 		stars[i].fi += 360/(speed/stepTime);		
-	
 		if(stars[i].fi > 360)stars[i].fi = stars[i].fi - 360;		
 	}	
 }
 
-function fadeInStars(stepTime, speed){
-	
+function fadeInStars(stars, stepTime, speed){	
 	for(var i=0; i< stars.length; i++){
-		//console.log(stars[i].opacity);
-		if(stars[i].opacity >= 1 ){
-			
+		if(stars[i].opacity >= 1 ){			
 			continue;
-		}
-		
+		}		
 		stars[i].opacity += 1/(speed/stepTime);
 	}	
 }
 
-function moveStars(stepTime, speed){
-	
-	for(var i=0; i< stars.length; i++){
-	
-		if(stars[i].radius >= main_height ){
-			
-			stars.splice(i, 1);
-			
-			continue;
-			
+function moveStars(stars, stepTime, speed){	
+	for(var i=0; i< stars.length; i++){	
+		if(stars[i].radius >= main_height ){			
+			stars.splice(i, 1);			
+			continue;			
 		}		
 		stars[i].radius += main_height/(speed/stepTime);
 	}	
 }
-function drawStars(){
+function drawStars(stars){
 	 //console.log("1");
 	for (var i=0; i<stars.length; i++){
         ctx.globalAlpha = stars[i].opacity;	

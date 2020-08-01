@@ -143,6 +143,7 @@ var rest_objects = {
 	
 }
 
+///создает спрайты из объекта  - ресурса
 function createSprites(sprites, img, sprite_description, type){
 	
 	for(var key in sprite_description){
@@ -191,9 +192,7 @@ SpriteCommon.prototype.render = function(){
 }
 
 SpriteCommon.prototype.anim_opacity = function(time,  toOpacity, stepTime_,  callb, counter){
-	
-	
-	
+		
 	if(this.anim_opacity_props == undefined){
 		
 		this.anim_opacity_props = {pastTime: 0, old_toOpacity: 0, old_time: 0, difOpacity: 0 }
@@ -286,18 +285,24 @@ SpriteCommon.prototype.anim_scale= function(littleBig ,toProportion, time, stepT
 			 this.anim_scale_props.step_dy =  this.anim_scale_props.step_dHeight/2;		
 		}		
 		this.anim_scale_props.stepTime += stepTime_;
-		
-            if(this.anim_scale_props.stepTime >= time){
-				stepTime_ =  time - this.anim_scale_props.stepTime;
-				this.anim_scale_props.stepTime = 1;			    					    
-			}				
+						
 			this.dx -= (this.anim_scale_props.step_dx/(time/stepTime_));
 			this.dy -= (this.anim_scale_props.step_dy/(time/stepTime_));
 			this.dWidth +=  this.anim_scale_props.step_dWidth/(time/stepTime_);
 			this.dHeight += this.anim_scale_props.step_dHeight/(time/stepTime_);
 			
-			if(this.anim_scale_props.stepTime == 1)callb(counter);
-		
+			if(this.anim_scale_props.stepTime >= time){
+				if(this.anim_scale_props.stepTime > time){
+					stepTime_ =  time - this.anim_scale_props.stepTime;
+					this.dx -= (this.anim_scale_props.step_dx/(time/stepTime_));
+					this.dy -= (this.anim_scale_props.step_dy/(time/stepTime_));
+					this.dWidth +=  this.anim_scale_props.step_dWidth/(time/stepTime_);
+					this.dHeight += this.anim_scale_props.step_dHeight/(time/stepTime_);					
+				}
+				this.anim_scale_props.stepTime = 1;
+				callb(counter);
+			}
+	
 }
 SpriteCommon.prototype.anim_wait = function(time, stepTime_, callb, counter){
 	
@@ -312,7 +317,7 @@ SpriteCommon.prototype.anim_wait = function(time, stepTime_, callb, counter){
 		}				
 }
 
-
+///////////////////////////////////////////////////////////
 function SpriteText(resources){
 	
 	SpriteCommon.call(this, null, resources);
@@ -342,7 +347,7 @@ SpriteText.prototype.render = function(){
 		ctx.fillText(phraseArray[i], this.dx,  this.dy + (this.lineHeight)*i );		
 	}	
 }
-
+/////////////////////////////////////////////////////////////////////////////
 function SpriteBalckScreen(resources){
 	
 	(resources.opacity !=undefined) ? this.opacity = resources.opacity : this.opacity = 1.0; 
@@ -373,12 +378,11 @@ SpriteBalckScreen.prototype.render = function(){
 		ctx.globalAlpha = 1.0;	
 }
 
-
+/////////////////////////////////////////////////////////////
 function SpriteImg(img, resources){
 	
- 
 	  SpriteCommon.call(this, img, resources);
-	  this.addCanvasPositionEndSize();            
+	  //this.addCanvasPositionEndSize();            
 }
 
 SpriteImg.prototype = Object.create(SpriteCommon.prototype);
@@ -387,11 +391,6 @@ Object.defineProperty(SpriteImg.prototype, 'constructor', {
     value: SpriteImg, 
     enumerable: false,
     writable: true });
-
-/*SpriteImg.prototype.addCanvasPositionEndSize = function(){
-	
-	SpriteCommon.prototype.addCanvasPositionEndSize.call(this);
-}*/
 
 SpriteImg.prototype.render = function(){
 	
